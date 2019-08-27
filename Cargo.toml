@@ -1,0 +1,13 @@
+[package]
+name = "zenroom_minimal_py"
+version = "0.1.0"
+authors = ["Julian Popescu <jpopesculian@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+zenroom_minimal = { path = "zenroom_minimal" }
+pyo3 = { version = "0.7", features = ["extension-module"] }
+
+[lib]
+name = "zenroom_minimal"
+crate-type = ["cdylib"]

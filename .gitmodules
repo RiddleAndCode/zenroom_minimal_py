@@ -1,3 +1,3 @@
-[submodule "zenroom_minimal"]
-	path = zenroom_minimal
-	url = git@github.com:riddleandcode/zenroom_minimal.git
+[submodule "zenroom"]
+	path = zenroom
+	url = git@github.com:RiddleAndCode/zenroom_minimal.git

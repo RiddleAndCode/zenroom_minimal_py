@@ -1,2 +1,6 @@
 /target
 **/*.rs.bk
+Pipfile
+*.egg-info
+pip-wheel-metadata
+**/*.so

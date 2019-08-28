@@ -20,7 +20,7 @@ impl<'p> ScenarioLinker for LambdaScenarioLinker {
         self.0
             .call(python, (scenario,), None)
             .and_then(|res| res.extract(python))
-            .map_err(|_| LError::RuntimeError("failed".to_string()))
+            .map_err(|e| LError::RuntimeError(format!("python execution error: {:?}", e)))
     }
 }
 
@@ -44,6 +44,20 @@ impl Zenroom {
         self.runtime
             .load(&source)
             .map_err(|e| PyErr::new::<TypeError, _>(format!("could not load source: {}", e)))?;
+        Ok(())
+    }
+
+    fn load_data(&mut self, data: String) -> PyResult<()> {
+        self.runtime
+            .load_data(&data)
+            .map_err(|e| PyErr::new::<TypeError, _>(format!("could not load data: {}", e)))?;
+        Ok(())
+    }
+
+    fn load_keys(&mut self, keys: String) -> PyResult<()> {
+        self.runtime
+            .load_keys(&keys)
+            .map_err(|e| PyErr::new::<TypeError, _>(format!("could not load keys: {}", e)))?;
         Ok(())
     }
 

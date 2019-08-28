@@ -1,20 +1,40 @@
-#[macro_use]
 extern crate pyo3;
 extern crate zenroom;
 
 use pyo3::{exceptions::TypeError, prelude::*};
-use zenroom::{prelude::*, FileScenarioLinker, ScenarioLoader, ZencodeRuntime};
+use zenroom::{
+    prelude::*, Error as LError, Result as LResult, ScenarioLinker, ScenarioLoader, ZencodeRuntime,
+};
 
 #[pyclass]
 struct Zenroom {
     runtime: ZencodeRuntime,
 }
 
+struct LambdaScenarioLinker(PyObject);
+
+impl<'p> ScenarioLinker for LambdaScenarioLinker {
+    fn read_scenario(&self, scenario: &str) -> LResult<String> {
+        let gil = Python::acquire_gil();
+        let python = gil.python();
+        self.0
+            .call(python, (scenario,), None)
+            .and_then(|res| res.extract(python))
+            .map_err(|_| LError::RuntimeError("failed".to_string()))
+    }
+}
+
+impl LambdaScenarioLinker {
+    fn new(lambda: PyObject) -> Self {
+        LambdaScenarioLinker(lambda)
+    }
+}
+
 #[pymethods]
 impl Zenroom {
     #[new]
-    fn new(obj: &PyRawObject, scenarios: &str) {
-        let loader = ScenarioLoader::new(FileScenarioLinker::new(scenarios));
+    fn construct(obj: &PyRawObject, lambda: PyObject) {
+        let loader = ScenarioLoader::new(LambdaScenarioLinker::new(lambda));
         obj.init(Zenroom {
             runtime: ZencodeRuntime::new(loader),
         })
@@ -23,7 +43,7 @@ impl Zenroom {
     fn load(&mut self, source: String) -> PyResult<()> {
         self.runtime
             .load(&source)
-            .map_err(|_| PyErr::new::<TypeError, _>("could not load source"))?;
+            .map_err(|e| PyErr::new::<TypeError, _>(format!("could not load source: {}", e)))?;
         Ok(())
     }
 
@@ -32,7 +52,7 @@ impl Zenroom {
         let result = self
             .runtime
             .eval()
-            .map_err(|_| PyErr::new::<TypeError, _>("something happened"))?;
+            .map_err(|e| PyErr::new::<TypeError, _>(format!("failed to eval: {}", e)))?;
         Ok(result)
     }
 }

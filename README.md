@@ -5,7 +5,7 @@ A small python wrapper around the ZenroomRuntime from [zenroom_minimal](https://
 ## Example
 
 ```python
-from zenroom_minimal import Zenroom;
+from zenroom_minimal import Zenroom
 
 f = lambda x : """
 Given("that my name is ''", function(name)

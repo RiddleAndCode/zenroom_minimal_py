@@ -1,11 +1,11 @@
 [package]
-name = "zenroom_minimal_py"
+name = "zenroom-minimal"
 version = "0.1.0"
 authors = ["Julian Popescu <jpopesculian@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-zenroom = { path = "zenroom", package = "zenroom_minimal" }
+zenroom = { package = "zenroom_minimal", version = "0.1.0" }
 pyo3 = { version = "0.7", features = ["extension-module"] }
 
 [lib]

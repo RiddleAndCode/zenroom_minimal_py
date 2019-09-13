@@ -2,6 +2,14 @@
 
 A small python wrapper around the ZenroomRuntime from [zenroom_minimal](https://github.com/RiddleAndCode/zenroom_minimal).
 
+## Building and Installing
+
+`zenroom_minimal` uses [maturin](https://github.com/PyO3/maturin) to build the python package.
+
+* `maturin publish` builds the crate into python packages and publishes them to pypi.
+* `maturin build` builds the wheels and stores them in a folder (`target/wheels` by default), but doesn't upload them.
+* `maturin develop` builds the crate and install it's as a python module directly in the current virtualenv.
+
 ## Example
 
 ```python
